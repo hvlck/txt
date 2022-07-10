@@ -29,3 +29,12 @@ func TestRemoveStopwords(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func BenchmarkRemoveStopwords(b *testing.B) {
+	c, err := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
+	b.StopTimer()
+
+	if err != nil || c != "lot text stopwords removed" {
+		b.Fail()
+	}
+}

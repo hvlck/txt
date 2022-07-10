@@ -2,6 +2,10 @@
 
 `text utilities (golang)`
 
+This library is primarily intended for my own use, but pull requests are always welcome.
+
+The primary focus is on performance.
+
 ## Credits
 
 ### Stopwords
