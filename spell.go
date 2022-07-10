@@ -7,7 +7,7 @@ import (
 )
 
 // loads the dictionary words list
-func load() ([][]byte, error) {
+func loadDict() ([][]byte, error) {
 	b, err := ioutil.ReadFile("./words.txt")
 	if err != nil {
 		return nil, nil
@@ -16,7 +16,7 @@ func load() ([][]byte, error) {
 	return bytes.Split(b, []byte("\n")), nil
 }
 
-var dict, dictErr = load()
+var dict, dictErr = loadDict()
 
 // generates a list of spelling corrections for the provided `word`
 // `lim` is the maximum levenshtein distance away for a correction to be returned (inclusive)
