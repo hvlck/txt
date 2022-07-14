@@ -8,7 +8,7 @@ import (
 
 // loads the dictionary words list
 func loadDict() ([][]byte, error) {
-	b, err := ioutil.ReadFile("./words.txt")
+	b, err := ioutil.ReadFile("./dicts/words.txt")
 	if err != nil {
 		return nil, nil
 	}

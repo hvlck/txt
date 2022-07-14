@@ -31,6 +31,8 @@ func TestRemoveStopwords(t *testing.T) {
 }
 
 func BenchmarkRemoveStopwords(b *testing.B) {
+	b.SetParallelism(1)
+
 	c, err := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
 	b.StopTimer()
 

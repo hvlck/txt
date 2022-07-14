@@ -206,5 +206,6 @@ func TestStem(t *testing.T) {
 }
 
 func BenchmarkStem(b *testing.B) {
+	b.SetParallelism(1)
 	Stem("antidisestablishmentarianism")
 }

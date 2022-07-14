@@ -84,6 +84,7 @@ const two = "antidisestablishmentarianism"
 // BenchmarkLd/txt-8                       	 1000000	         0.0007500 ns/op	       0 B/op	       0 allocs/op
 // BenchmarkSpellcheck-8                   	 1000000	        10.12 ns/op	       0 B/op	       0 allocs/op
 func BenchmarkLd(b *testing.B) {
+	b.SetParallelism(1)
 	b.Run("rosetta code loop", func(b *testing.B) {
 		rt(one, two)
 		b.StopTimer()
@@ -116,6 +117,8 @@ func TestSpellcheck(t *testing.T) {
 }
 
 func BenchmarkSpellcheck(b *testing.B) {
+	b.SetParallelism(1)
+
 	_, err := Correct("wat", 3)
 	b.StopTimer()
 	if err != nil {

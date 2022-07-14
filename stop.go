@@ -13,7 +13,7 @@ var stopwords, stopErr = loadStopwords()
 
 // loads the stopwords list
 func loadStopwords() (map[string]bool, error) {
-	b, err := ioutil.ReadFile("./stop.txt")
+	b, err := ioutil.ReadFile("./dicts/stop.txt")
 	if err != nil {
 		return nil, nil
 	}
