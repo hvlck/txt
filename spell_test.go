@@ -1,6 +1,8 @@
 package txt
 
 import (
+	"io/ioutil"
+	"strings"
 	"testing"
 )
 
@@ -113,7 +115,33 @@ func TestSpellcheck(t *testing.T) {
 	if err != nil {
 		t.Fail()
 	}
+}
 
+var d, dErr = loadTrie()
+
+func loadTrie() (*Node, error) {
+	b, err := ioutil.ReadFile("./dicts/words.txt")
+	if err != nil {
+		return nil, nil
+	}
+	t := NewTrie()
+
+	words := strings.Split(string(b), "\n")
+	t.Insert(words...)
+	return t, nil
+}
+
+func BenchmarkTrieSpellcheck(b *testing.B) {
+	b.SetParallelism(1)
+	if dErr != nil {
+		b.Fatal(dErr)
+	}
+
+	f := d.PartialMatch("wat", 5, 15)
+
+	if len(f) != 15 {
+		b.Fail()
+	}
 }
 
 func BenchmarkSpellcheck(b *testing.B) {

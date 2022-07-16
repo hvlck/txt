@@ -5,6 +5,15 @@ type Node struct {
 	Done      bool
 	Character rune
 	id        uint32
+// NodeAt returns the node at the last character of the provided string.
+func (n *Node) NodeAt(s string) *Node {
+	for _, char := range s {
+		if _, ok := n.Kids[char]; ok {
+			return n.Kids[char].NodeAt(s[1:])
+		}
+	}
+
+	return n
 }
 
 // func (n *Node) String() string {
@@ -15,6 +24,7 @@ type Node struct {
 // 	}`, n.Done, string(n.Character), n.id)
 // }
 
+// ExactContains determines whether the provided string is entirely within the trie.
 func (n *Node) ExactContains(s string) bool {
 	// root node
 	if len(n.Kids) == 0 && n.id == 0 {
@@ -43,10 +53,12 @@ func (n *Node) ExactContains(s string) bool {
 // `d` is an optional depth value that controls how many characters of the provided string must be present
 // sequentially in the tree. For example, providing (`exam`, 3) for a trie that already has `example` will
 // check to make sure that `e`, `x`, and `a` are in the trie as children of the previous character.
-// Setting this value to -1 is equivalent to setting it to len(s), as well as the ExactContains() method.
-// `cd` is used internally for recursion. Do not set it yourself.
-func (n *Node) PartialContains(s string, d int, cd ...int) bool {
+// Setting this value to -1 or a value greater than the length of `s` is equivalent to setting it to len(s),
+// as well as the ExactContains() method.
+func (n *Node) PartialContains(s string, d int) bool {
 	if d == -1 {
+		d = len(s)
+	} else if d > len(s) {
 		d = len(s)
 	}
 
@@ -60,29 +72,22 @@ func (n *Node) PartialContains(s string, d int, cd ...int) bool {
 	if node, ok := n.Kids[rn]; ok {
 		sl := s[1:]
 
-		if len(cd) == 1 {
-			cd[0]++
-		} else {
-			cd = make([]int, 1)
-			cd[0] = 1
-		}
-
-		if len(cd) == 1 && cd[0] == d {
+		if d == 0 {
 			return true
 		}
 
+		d--
 		if len(sl) != 0 {
-			return node.PartialContains(sl, d, cd...)
+			return node.PartialContains(sl, d)
 		} else if len(s) == 1 {
 			// last character in string
-			cd[0] -= 1
-			return node.PartialContains(s, d, cd...)
+			return node.PartialContains(s, d)
 		}
 
 	}
 
 	// current depth > max depth
-	if len(cd) == 1 && cd[0] > d {
+	if d == -1 {
 		return false
 	}
 
@@ -94,6 +99,7 @@ func (n *Node) PartialContains(s string, d int, cd ...int) bool {
 	return false
 }
 
+// todo: may be issue with this in global scope and having multiple tries
 var c uint32
 
 func NewNode(rn rune) *Node {
@@ -114,6 +120,9 @@ func (n Node) Insert(words ...string) {
 		}
 
 		rn := rune(s[0])
+		if !unicode.IsLetter(rn) {
+			continue
+		}
 
 		// no kids
 		if len(n.Kids) == 0 {
@@ -137,7 +146,8 @@ func (n Node) Insert(words ...string) {
 
 		// last child
 		if len(s) == 1 {
-			n.Kids[rn].Done = true
+			n.Kids[rn].Kids['*'] = NewNode('*')
+			n.Kids[rn].Kids['*'].Done = true
 		}
 	}
 }

@@ -18,7 +18,7 @@ func loadDict() ([][]byte, error) {
 
 var dict, dictErr = loadDict()
 
-// generates a list of spelling corrections for the provided `word`
+// Generates a list of spelling corrections for the provided `word`.
 // `lim` is the maximum levenshtein distance away for a correction to be returned (inclusive)
 // e.g. a correction with a LD of 3 would be returned with a limit of `3`, but a word with a LD of 4 would not
 // in the return values, the `uint8` in the map corresponds to levenshtein distance of the corrected word
@@ -63,6 +63,7 @@ func min(v ...uint8) uint8 {
 // levenshtein distance
 // based in part on https://rosettacode.org/wiki/Levenshtein_distance#Go, some modifications made to use one-dimensional array
 // this version usually takes about half the time as the second version, and usually less than half the time of the first version on RosettaCode
+// todo: add swap variant (e.g. `liek` -> `like`)
 func Ld(a, b string) uint8 {
 	if a == "" {
 		return uint8(len(b))
