@@ -144,6 +144,39 @@ func KeyProximity(o, t rune) uint8 {
 	return max(colDiff, rowDiff)
 }
 
+const (
+	KEYDIST_WEIGHT = 50
+	PREFIX_WEIGHT  = 10
+	LEV_WEIGHT     = 50
+)
+
+func (c *Correction) weigh(original string) {
+	if c.Word == original {
+		c.Weight = 1
+		return
+	}
+	var key_len uint8 = 0
+	for i, v := range c.Word {
+		if len(original)-1 < i {
+			break
+		}
+
+		key_len += KeyProximity(v, rune(original[i]))
+	}
+
+	c.key_len = key_len
+	c.prefix_len = PrefixLength(c.Word, original)
+
+	var wld float32 = float32(c.ld) * LEV_WEIGHT
+	var wkey_len float32 = float32(c.key_len) * KEYDIST_WEIGHT
+	var wprefix_len float32 = PREFIX_WEIGHT / float32(c.prefix_len)
+	if c.prefix_len == 0 {
+		wprefix_len = 0
+	}
+
+	c.Weight = float32(100 / (wld + wkey_len + wprefix_len))
+}
+
 func (n *Node) PartialMatch(s string, target uint8, max int) []Correction {
 	f := n.search_lev(strings.ToLower(s), "", target)
 

@@ -13,13 +13,20 @@ func printKids(t *Node, parent string, d int) {
 
 	for k, v := range t.Kids {
 		fmt.Printf("%v%v (parent: %v, depth: %v): %v\n", strings.Repeat(" ", d*2), string(k), parent, d, v)
-
 		if len(v.Kids) != 0 {
 			printKids(v, string(k), d+1)
 		}
 	}
 }
 
+func TestWeigh(t *testing.T) {
+	c := Correction{
+		Word: "typo",
+		ld:   Ld("typo", "testing"),
+	}
+
+	c.weigh("testing")
+}
 func TestPrefixLength(t *testing.T) {
 	vals := []uint8{
 		PrefixLength("tree", "trees"),
@@ -64,6 +71,9 @@ func TestKeyProximity(t *testing.T) {
 			t.Fatal(v, answers[i])
 		}
 	}
+}
+
+func TestSearch_Lev(t *testing.T) {
 }
 
 func TestPartialMatch(t *testing.T) {
