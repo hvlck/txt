@@ -34,6 +34,35 @@ type Correction struct {
 	Weight float32
 }
 
+// Searches for all words in the trie within a fixed `limit` edit distance away from the original string `s`.
+func (n *Node) search_lev(s, b string, limit uint8, prev ...Correction) []Correction {
+	if n.id == 0 {
+		for rn, v := range n.Kids {
+			prev = append(prev, v.search_lev(s, string(rn), limit)...)
+		}
+		return prev
+	} else {
+		for rn, v := range n.Kids {
+			lev := Ld(b, s)
+			// if lev > limit {
+			// 	continue
+			// }
+
+			if v.Done && len(v.Kids) == 0 {
+				if lev <= limit {
+					prev = append(prev, Correction{ld: lev, Word: b, Weight: 0})
+				}
+
+				continue
+			} else {
+				prev = append(prev, v.search_lev(s, b+string(rn), limit)...)
+			}
+		}
+	}
+
+	return prev
+}
+
 // PrefixLength calculates the number of same characters at the beginning of both strings.
 func PrefixLength(o, t string) uint8 {
 	var n uint8 = 0
@@ -113,6 +142,49 @@ func KeyProximity(o, t rune) uint8 {
 
 	// largest value, no trig
 	return max(colDiff, rowDiff)
+}
+
+func (n *Node) PartialMatch(s string, target uint8, max int) []Correction {
+	f := n.search_lev(strings.ToLower(s), "", target)
+
+	var lim float32 = 0
+	res := make([]Correction, max)
+
+	last := 0
+	for _, v := range f {
+		v.weigh(s)
+		if lim == 0 {
+			lim = v.Weight
+		}
+
+		if v.Weight >= lim {
+			// res is filled
+			if n := res[last]; len(n.Word) != 0 && n.ld != 0 {
+				// search for element with lowest weight, replace it
+				for i, k := range res {
+					// levenshtein and weight of word being examined is less than word currently in final results
+					if v.Weight > k.Weight && v.ld <= target {
+						res[i] = v
+						sort.Slice(res, func(i, j int) bool {
+							return res[i].Weight < res[j].Weight
+						})
+						break
+					}
+				}
+			} else if last < max {
+				res[last] = v
+				if last+1 < max {
+					last++
+				}
+				sort.Slice(res, func(i, j int) bool {
+					return res[i].Weight < res[j].Weight
+				})
+			}
+		}
+		// ignore words with weights smaller than limit
+	}
+
+	return res
 }
 
 // NodeAt returns the node at the last character of the provided string.

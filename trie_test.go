@@ -66,6 +66,33 @@ func TestKeyProximity(t *testing.T) {
 	}
 }
 
+func TestPartialMatch(t *testing.T) {
+	trie, err := loadTrie()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	matches := trie.PartialMatch("tesk", 3, 15)
+	if len(matches) != 15 {
+		t.Fail()
+	}
+}
+
+func BenchmarkPartialMatch(b *testing.B) {
+	b.SetParallelism(1)
+	b.StopTimer()
+	trie, err := loadTrie()
+	if err != nil {
+		b.Fatal(err)
+	}
+	b.StartTimer()
+
+	matches := trie.PartialMatch("tesk", 3, 15)
+	if len(matches) != 15 {
+		b.Fail()
+	}
+}
+
 func TestExactContains(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")
@@ -87,6 +114,22 @@ func TestPartialContains(t *testing.T) {
 	not_present := trie.PartialContains("oil", -1)
 	if !partial || !full || not_present {
 		t.Fatalf("%v,%v,%v", partial, full, not_present)
+	}
+}
+
+func BenchmarkInsert(b *testing.B) {
+	trie := NewTrie()
+	trie.Insert("testing")
+	if len(trie.Kids) != 1 {
+		b.Fail()
+	}
+}
+
+func TestInsert(t *testing.T) {
+	trie := NewTrie()
+	trie.Insert("testing")
+	if len(trie.Kids) != 1 {
+		t.Fail()
 	}
 }
 
