@@ -51,6 +51,70 @@ func PrefixLength(o, t string) uint8 {
 
 	return n
 }
+
+var keys = [][]rune{
+	{'`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '='},
+	{'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'},
+	{'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', ' ', ' '},
+	{'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', ' ', ' ', ' '},
+}
+
+var all_keys = make([]rune, 0, 13*4)
+
+func abs(x int) int {
+	y := 0
+	if x < y {
+		return y - x
+	}
+	return x - y
+}
+
+func max(x, y int) uint8 {
+	if x > y {
+		return uint8(x)
+	} else {
+		return uint8(y)
+	}
+}
+
+// Returns the number of keys away `t` is from `o`.
+// This is used as a measure of accidental typos, e.g. `jat` when the intention was `hat`.
+func KeyProximity(o, t rune) uint8 {
+	if o == t {
+		return 0
+	}
+
+	if len(all_keys) == 0 {
+		for _, v := range keys {
+			all_keys = append(all_keys, v...)
+		}
+	}
+
+	rO := 0
+	cO := 0
+
+	rT := 0
+	cT := 0
+	for idx, v := range all_keys {
+		idx += 1
+		if v == o {
+			cO = idx / 13
+			rO = idx - cO*13
+		}
+
+		if v == t {
+			cT = idx / 13
+			rT = idx - cT*13
+		}
+	}
+
+	rowDiff := abs(rT - rO)
+	colDiff := abs(cT - cO)
+
+	// largest value, no trig
+	return max(colDiff, rowDiff)
+}
+
 // NodeAt returns the node at the last character of the provided string.
 func (n *Node) NodeAt(s string) *Node {
 	for _, char := range s {

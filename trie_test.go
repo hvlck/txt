@@ -35,6 +35,37 @@ func TestPrefixLength(t *testing.T) {
 	}
 }
 
+func TestMax(t *testing.T) {
+
+}
+
+func TestAbs(t *testing.T) {
+	nth := abs(10 - 23)
+	th := abs(10 + 3)
+
+	if nth != 13 || th != 13 {
+		t.Fail()
+	}
+}
+
+func TestKeyProximity(t *testing.T) {
+	vals := []uint8{
+		KeyProximity('r', 't'),
+		KeyProximity('s', 'w'),
+		KeyProximity('a', 'w'),
+		KeyProximity('l', 'p'),
+		KeyProximity('v', 'p'),
+		KeyProximity('1', '.'),
+	}
+	answers := []uint8{1, 1, 1, 1, 6, 7}
+
+	for i, v := range vals {
+		if v != answers[i] {
+			t.Fatal(v, answers[i])
+		}
+	}
+}
+
 func TestExactContains(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")
