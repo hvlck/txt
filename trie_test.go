@@ -20,6 +20,21 @@ func printKids(t *Node, parent string, d int) {
 	}
 }
 
+func TestPrefixLength(t *testing.T) {
+	vals := []uint8{
+		PrefixLength("tree", "trees"),
+		PrefixLength("grant", "grace"),
+		PrefixLength("hammer", "hankering"),
+	}
+	answers := []uint8{4, 3, 2}
+
+	for i, v := range vals {
+		if v != answers[i] {
+			t.Fatal(v, answers[i], i)
+		}
+	}
+}
+
 func TestExactContains(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")

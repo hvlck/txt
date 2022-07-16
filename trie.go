@@ -1,10 +1,56 @@
 package txt
 
+import (
+	"sort"
+	"strings"
+	"unicode"
+)
+
+// Node is a node in a trie tree.
 type Node struct {
-	Kids      map[rune]*Node
-	Done      bool
+	// Pointers to child branches
+	Kids map[rune]*Node
+	// End of branch
+	Done bool
+	// Character representing current branch
 	Character rune
-	id        uint32
+	// Internal id. 0 is the id of the root node.
+	id uint32
+}
+
+// A word correction. A copy of the original word is not stored.
+type Correction struct {
+	// Corrected word
+	Word string
+	// Levenshtein distance from original. Lower is closer.
+	ld uint8
+	// Number of characters that both words share at the beginning.
+	// For example, grace and grant have a prefix_len of 3 as they both share `gra` at the beginning.
+	// Higher is better.
+	prefix_len uint8
+	// Sum of the distance between each character in the original and corrected word. Lower is better.
+	key_len uint8
+	// Weight of word correction. Higher values mean the correction is closer to the original word.
+	Weight float32
+}
+
+// PrefixLength calculates the number of same characters at the beginning of both strings.
+func PrefixLength(o, t string) uint8 {
+	var n uint8 = 0
+	for i, v := range t {
+		if len(o)-1 < i {
+			return n
+		}
+
+		if v == rune(o[i]) {
+			n++
+		} else {
+			break
+		}
+	}
+
+	return n
+}
 // NodeAt returns the node at the last character of the provided string.
 func (n *Node) NodeAt(s string) *Node {
 	for _, char := range s {
