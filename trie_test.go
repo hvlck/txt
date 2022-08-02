@@ -7,7 +7,7 @@ import (
 )
 
 func printKids(t *Node, parent string, d int) {
-	if t.id == 0 {
+	if t.Id == 0 {
 		fmt.Println("* (root, depth: 0)")
 	}
 

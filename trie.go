@@ -14,7 +14,7 @@ type Node struct {
 	// Character representing current branch
 	Character rune
 	// Internal id. 0 is the id of the root node.
-	id uint32
+	Id uint32
 }
 
 // NodeAt returns the node at the last character of the provided string.
@@ -33,13 +33,13 @@ func (n *Node) String() string {
 	done: %v,
 	character: %v,
 	id: %v
-	}`, n.Done, string(n.Character), n.id)
+	}`, n.Done, string(n.Character), n.Id)
 }
 
 // ExactContains determines whether the provided string is entirely within the trie.
 func (n *Node) ExactContains(s string) bool {
 	// empty root node or string is empty
-	if (len(n.Kids) == 0 && n.id == 0) || len(s) == 0 {
+	if (len(n.Kids) == 0 && n.Id == 0) || len(s) == 0 {
 		return false
 	}
 
@@ -80,7 +80,7 @@ func (n *Node) PartialContains(s string, d int) bool {
 	}
 
 	// root node is empty or string is empty
-	if (len(n.Kids) == 0 && n.id == 0) || len(s) == 0 {
+	if (len(n.Kids) == 0 && n.Id == 0) || len(s) == 0 {
 		return false
 	}
 
@@ -117,7 +117,7 @@ func newNode(rn rune) *Node {
 		Kids:      make(map[rune]*Node),
 		Done:      false,
 		Character: rn,
-		id:        c,
+		Id:        c,
 	}
 }
 
@@ -162,7 +162,7 @@ func (n Node) Insert(words ...string) {
 }
 
 func (n Node) Delete(words ...string) bool {
-	if len(n.Kids) == 0 && n.id == 0 || len(words) == 0 {
+	if len(n.Kids) == 0 && n.Id == 0 || len(words) == 0 {
 		return false
 	}
 
@@ -182,6 +182,6 @@ func NewTrie() *Node {
 		Kids:      make(map[rune]*Node),
 		Done:      true,
 		Character: '*',
-		id:        0,
+		Id:        0,
 	}
 }
