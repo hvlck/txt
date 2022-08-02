@@ -4,7 +4,7 @@ import "testing"
 
 func TestReadTime(t *testing.T) {
 	words := map[string]int{
-		"This is a test.": 10,
+		"": 10,
 	}
 
 	for k, v := range words {
