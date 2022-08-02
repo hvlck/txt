@@ -19,99 +19,33 @@ func printKids(t *Node, parent string, d int) {
 	}
 }
 
-func TestWeigh(t *testing.T) {
-	c := Correction{
-		Word: "typo",
-		ld:   Ld("typo", "testing"),
-	}
-
-	c.weigh("testing")
-}
-func TestPrefixLength(t *testing.T) {
-	vals := []uint8{
-		PrefixLength("tree", "trees"),
-		PrefixLength("grant", "grace"),
-		PrefixLength("hammer", "hankering"),
-	}
-	answers := []uint8{4, 3, 2}
-
-	for i, v := range vals {
-		if v != answers[i] {
-			t.Fatal(v, answers[i], i)
-		}
-	}
-}
-
-func TestMax(t *testing.T) {
-
-}
-
-func TestAbs(t *testing.T) {
-	nth := abs(10 - 23)
-	th := abs(10 + 3)
-
-	if nth != 13 || th != 13 {
-		t.Fail()
-	}
-}
-
-func TestKeyProximity(t *testing.T) {
-	vals := []uint8{
-		KeyProximity('r', 't'),
-		KeyProximity('s', 'w'),
-		KeyProximity('a', 'w'),
-		KeyProximity('l', 'p'),
-		KeyProximity('v', 'p'),
-		KeyProximity('1', '.'),
-	}
-	answers := []uint8{1, 1, 1, 1, 6, 7}
-
-	for i, v := range vals {
-		if v != answers[i] {
-			t.Fatal(v, answers[i])
-		}
-	}
-}
-
-func TestSearch_Lev(t *testing.T) {
-}
-
-func TestPartialMatch(t *testing.T) {
-	trie, err := loadTrie()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	matches := trie.PartialMatch("tesk", 3, 15)
-	if len(matches) != 15 {
-		t.Fail()
-	}
-}
-
-func BenchmarkPartialMatch(b *testing.B) {
-	b.SetParallelism(1)
-	b.StopTimer()
-	trie, err := loadTrie()
-	if err != nil {
-		b.Fatal(err)
-	}
-	b.StartTimer()
-
-	matches := trie.PartialMatch("tesk", 3, 15)
-	if len(matches) != 15 {
-		b.Fail()
-	}
-}
-
 func TestExactContains(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")
 
-	present := trie.ExactContains("original")
-	not_present := trie.ExactContains("test")
+	answers := map[string]bool{
+		"original": true,
+		"test":     false,
+		"turtle":   false,
+	}
 
-	if !present || not_present {
-		t.Fail()
+	for k, v := range answers {
+		if trie.ExactContains(k) != v {
+			t.Fatalf("%v is not %v", k, v)
+		}
+	}
+}
+
+func BenchmarkExactContains(b *testing.B) {
+	b.StopTimer()
+	trie := NewTrie()
+	trie.Insert("Antidisestablishmentarianism", "original", "tertiary")
+	b.StartTimer()
+
+	present := trie.ExactContains("Antidisestablishmentarianism")
+
+	if !present {
+		b.Fail()
 	}
 }
 
@@ -119,18 +53,26 @@ func TestPartialContains(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")
 
-	partial := trie.PartialContains("test", 3)
-	full := trie.PartialContains("testing", -1)
-	not_present := trie.PartialContains("oil", -1)
-	if !partial || !full || not_present {
-		t.Fatalf("%v,%v,%v", partial, full, not_present)
+	answers := map[string]bool{
+		"original": true,
+		"test":     true,
+		"turtle":   false,
+		"tert":     true,
+		"nal":      false,
+	}
+
+	for k, v := range answers {
+		if trie.PartialContains(k, -1) != v {
+			t.Fatalf("%v is not %v", k, v)
+		}
 	}
 }
 
-func BenchmarkInsert(b *testing.B) {
+func BenchmarkPartialContains(b *testing.B) {
 	trie := NewTrie()
-	trie.Insert("testing")
-	if len(trie.Kids) != 1 {
+	trie.Insert("testing", "original", "tertiary", "Antidisestablishmentarianism")
+
+	if trie.PartialContains("Antidisestablishm", -1) != true {
 		b.Fail()
 	}
 }
@@ -143,9 +85,17 @@ func TestInsert(t *testing.T) {
 	}
 }
 
+func BenchmarkInsert(b *testing.B) {
+	trie := NewTrie()
+	trie.Insert("testing")
+	if len(trie.Kids) != 1 {
+		b.Fail()
+	}
+}
+
 func TestTrie(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", "original", "tertiary")
 
-	printKids(trie, "", 1)
+	// printKids(trie, "", 1)
 }
