@@ -129,7 +129,7 @@ func (n Node) Insert(words ...string) {
 		}
 
 		rn := rune(s[0])
-		if !unicode.IsNumber(rn) || !unicode.IsLetter(rn) {
+		if !unicode.IsNumber(rn) && !unicode.IsLetter(rn) {
 			continue
 		}
 
