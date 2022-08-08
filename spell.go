@@ -1,52 +1,6 @@
 // levenshtein distance
 package txt
 
-import (
-	"bytes"
-	"io/ioutil"
-)
-
-// loads the dictionary words list
-func loadDict() ([][]byte, error) {
-	b, err := ioutil.ReadFile("./dicts/words.txt")
-	if err != nil {
-		return nil, nil
-	}
-
-	return bytes.Split(b, []byte("\n")), nil
-}
-
-var dict, dictErr = loadDict()
-
-// Generates a list of spelling corrections for the provided `word`.
-// `lim` is the maximum levenshtein distance away for a correction to be returned (inclusive)
-// e.g. a correction with a LD of 3 would be returned with a limit of `3`, but a word with a LD of 4 would not
-// in the return values, the `uint8` in the map corresponds to levenshtein distance of the corrected word
-// todo: better, more focused results; current implementation returns many options, especially for smaller words
-// could possibly be fixed by weighting spelling errors that are closer on keyboards
-// e.g. with the input `vad`
-// `tad` and `bad` are both options, but the "b" in `bad` is closer physically on the keyboard than the "t" in
-// `tab`, and so would be the better choice
-func Correct(word string, lim uint8) (map[string]uint8, error) {
-	if dictErr != nil {
-		return nil, dictErr
-	}
-
-	// all found matches
-	matches := map[string]uint8{}
-
-	for i := 0; i < len(dict); i++ {
-		// levenshtein distance of correction
-		l := Ld(word, string(dict[i]))
-		if l <= lim {
-			matches[string(dict[i])] = l
-			lim = l
-		}
-	}
-
-	return matches, nil
-}
-
 // returns the minimum of a function
 func min(v ...uint8) uint8 {
 	m := v[0]
