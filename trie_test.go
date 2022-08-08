@@ -21,7 +21,10 @@ func printKids(t *Node, parent string, d int) {
 
 func TestExactContains(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert("testing", "original", "tertiary")
+	words := []string{"testing", "original", "tertiary"}
+	for _, v := range words {
+		trie.Insert(v, nil)
+	}
 
 	answers := map[string]bool{
 		"original": true,
@@ -39,7 +42,10 @@ func TestExactContains(t *testing.T) {
 func BenchmarkExactContains(b *testing.B) {
 	b.StopTimer()
 	trie := NewTrie()
-	trie.Insert("Antidisestablishmentarianism", "original", "tertiary")
+	words := []string{"Antidisestablishmentarianism", "original", "tertiary"}
+	for _, v := range words {
+		trie.Insert(v, nil)
+	}
 	b.StartTimer()
 
 	present := trie.ExactContains("Antidisestablishmentarianism")
@@ -51,7 +57,10 @@ func BenchmarkExactContains(b *testing.B) {
 
 func TestPartialContains(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert("testing", "original", "tertiary")
+	words := []string{"testing", "original", "tertiary"}
+	for _, v := range words {
+		trie.Insert(v, nil)
+	}
 
 	answers := map[string]bool{
 		"original": true,
@@ -70,7 +79,10 @@ func TestPartialContains(t *testing.T) {
 
 func BenchmarkPartialContains(b *testing.B) {
 	trie := NewTrie()
-	trie.Insert("testing", "original", "tertiary", "Antidisestablishmentarianism")
+	words := []string{"testing", "original", "tertiary", "Antidisestablishmentarianism"}
+	for _, v := range words {
+		trie.Insert(v, nil)
+	}
 
 	if trie.PartialContains("Antidisestablishm", -1) != true {
 		b.Fail()
@@ -79,7 +91,7 @@ func BenchmarkPartialContains(b *testing.B) {
 
 func TestInsert(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert("testing")
+	trie.Insert("testing", nil)
 	if len(trie.Kids) != 1 {
 		t.Fail()
 	}
@@ -87,7 +99,7 @@ func TestInsert(t *testing.T) {
 
 func BenchmarkInsert(b *testing.B) {
 	trie := NewTrie()
-	trie.Insert("testing")
+	trie.Insert("testing", nil)
 	if len(trie.Kids) != 1 {
 		b.Fail()
 	}
@@ -95,7 +107,10 @@ func BenchmarkInsert(b *testing.B) {
 
 func TestTrie(t *testing.T) {
 	trie := NewTrie()
-	trie.Insert("testing", "original", "tertiary")
+	words := []string{"testing", "original", "tertiary"}
+	for _, v := range words {
+		trie.Insert(v, nil)
+	}
 
 	// printKids(trie, "", 1)
 }

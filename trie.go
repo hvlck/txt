@@ -9,6 +9,8 @@ import (
 type Node struct {
 	// Pointers to child branches
 	Kids map[rune]*Node
+	// Custom data, inserted into the last child ('*') of a string's tree.
+	Data []byte
 	// End of branch
 	Done bool
 	// Character representing current branch
@@ -121,43 +123,42 @@ func newNode(rn rune) *Node {
 	}
 }
 
-// inserts words into a trie
-func (n Node) Insert(words ...string) {
-	for _, s := range words {
-		if len(s) == 0 {
-			continue
-		}
+// Inserts a word into a trie.
+func (n Node) Insert(s string, data []byte) {
+	if len(s) == 0 {
+		return
+	}
 
-		rn := rune(s[0])
-		if !unicode.IsNumber(rn) && !unicode.IsLetter(rn) {
-			continue
-		}
+	rn := rune(s[0])
+	if !unicode.IsNumber(rn) && !unicode.IsLetter(rn) {
+		return
+	}
 
-		// no kids
-		if len(n.Kids) == 0 {
-			n.Kids[rn] = newNode(rn)
-		} else if node, ok := n.Kids[rn]; ok {
-			// node is present, continue down branch
-			sl := s[1:]
-			if len(sl) != 0 {
-				node.Insert(sl)
-				continue
-			}
-		} else if !ok {
-			// character is not present on end of branch, create new node
-			n.Kids[rn] = newNode(rn)
-		}
-
+	// no kids
+	if len(n.Kids) == 0 {
+		n.Kids[rn] = newNode(rn)
+	} else if node, ok := n.Kids[rn]; ok {
+		// node is present, continue down branch
 		sl := s[1:]
 		if len(sl) != 0 {
-			n.Kids[rn].Insert(sl)
+			node.Insert(sl, data)
+			return
 		}
+	} else if !ok {
+		// character is not present on end of branch, create new node
+		n.Kids[rn] = newNode(rn)
+	}
 
-		// last child
-		if len(s) == 1 {
-			n.Kids[rn].Kids['*'] = newNode('*')
-			n.Kids[rn].Kids['*'].Done = true
-		}
+	sl := s[1:]
+	if len(sl) != 0 {
+		n.Kids[rn].Insert(sl, data)
+	}
+
+	// last child
+	if len(s) == 1 {
+		n.Kids[rn].Kids['*'] = newNode('*')
+		n.Kids[rn].Kids['*'].Done = true
+		n.Kids[rn].Kids['*'].Data = data
 	}
 }
 
