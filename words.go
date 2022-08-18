@@ -30,14 +30,43 @@ func removeChars(s string, characters ...string) string {
 	return s
 }
 
-// Returns the individual words in a string.
+// Returns the individual words in a string, in lowercase.
 // Also removes punctuation (".", ",", ":", ";", "!", "?"). Parantheses are kept, as well as brackets and quotation
 // marks.
 func Words(s string) []string {
+	s = normalize(s)
+	return strings.Split(s, " ")
+}
+
+type WordOffset struct {
+	word   string
+	offset int
+}
+
+func normalize(s string) string {
+	s = strings.ToLower(s)
 	s = replaceSpaces(s)
 	s = strings.ReplaceAll(s, "-", " ")
 	s = removeChars(s, ".", ",", ":", ";", "!", "?")
-	return strings.Split(s, " ")
+
+	return s
+}
+
+// Returns the offsets and individual words in a string.
+func WordOffsets(s string) []WordOffset {
+	s = normalize(s)
+	words := strings.Split(s, " ")
+	offsets := make([]WordOffset, len(words))
+
+	for idx, v := range words {
+		offsets[idx] = WordOffset{
+			word:   v,
+			offset: strings.Index(s, v),
+		}
+	}
+
+	return offsets
+}
 }
 
 func CharCount(s string) int {

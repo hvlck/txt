@@ -31,6 +31,7 @@ The primary focus is on performance, for use in a full-text search engine I'm bu
   + synoyms/thesaurus
     + replace multiple words with one word that is a synoym of it
 + text difficulty
++ support for multiple languages
 
 ## Credits
 

@@ -79,10 +79,10 @@ func groupWord(s string) []string {
 	return strings.Split(f, ",")
 }
 
-type CVList []rune
-type StringList []string
+type cvList []rune
+type stringList []string
 
-func encode(s []string) CVList {
+func encode(s []string) cvList {
 	r := make([]rune, len(s))
 	for i, v := range s {
 		vow := isVowel(rune(v[0]))
@@ -121,7 +121,7 @@ func stemEndsCC(s string) bool {
 
 // stem ends with consonant-vowel-consonant
 // last consonant cannot be W, X, or Y
-func stemEndsCVC(s StringList) bool {
+func stemEndsCVC(s stringList) bool {
 	if len(s) < 3 {
 		return false
 	}

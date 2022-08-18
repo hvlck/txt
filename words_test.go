@@ -35,3 +35,22 @@ func TestWords(t *testing.T) {
 		}
 	}
 }
+
+func TestWordOffsets(t *testing.T) {
+	examples := []string{
+		"The quick brown fox",
+	}
+
+	words := [][]int{
+		{0, 4, 10, 16},
+	}
+
+	for idx, v := range examples {
+		for index, word := range WordOffsets(v) {
+			if words[idx][index] != word.offset {
+				t.Fatalf("expected %v, got %v", words[idx][index], word)
+			}
+		}
+	}
+}
+
