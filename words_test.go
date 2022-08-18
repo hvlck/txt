@@ -1,6 +1,8 @@
 package txt
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestReadTime(t *testing.T) {
 	words := map[string]int{
@@ -54,3 +56,24 @@ func TestWordOffsets(t *testing.T) {
 	}
 }
 
+func TestWordFrequency(t *testing.T) {
+	examples := []string{
+		"The quick brown fox ran over the slow gray fox.",
+	}
+
+	words := [][]string{
+		{"the", "fox", "ran"},
+	}
+
+	freqs := [][]uint{
+		{2, 2, 1},
+	}
+
+	for idx, v := range examples {
+		for index, word := range words[idx] {
+			if WordFrequency(v, word) != freqs[idx][index] {
+				t.Fatalf("expected %v, got %v", freqs[idx][index], WordFrequency(v, word))
+			}
+		}
+	}
+}

@@ -67,6 +67,18 @@ func WordOffsets(s string) []WordOffset {
 
 	return offsets
 }
+
+func WordFrequency(s, word string) uint {
+	words := Words(s)
+
+	var i uint
+	for _, v := range words {
+		if v == word {
+			i += 1
+		}
+	}
+
+	return i
 }
 
 func CharCount(s string) int {
