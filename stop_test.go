@@ -5,11 +5,7 @@ import (
 )
 
 func TestContainsStopwords(t *testing.T) {
-	c, err := ContainsStopwords("this is the best text")
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-	}
+	c := ContainsStopwords("this is the best text")
 
 	if !c {
 		t.Log("returned doesn't contain stopwords")
@@ -18,11 +14,7 @@ func TestContainsStopwords(t *testing.T) {
 }
 
 func TestRemoveStopwords(t *testing.T) {
-	c, err := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
-	if err != nil {
-		t.Log(err)
-		t.Fail()
-	}
+	c := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
 
 	if c != "lot text stopwords removed" {
 		t.Log("didn't properly remove all stopwords")
@@ -33,10 +25,19 @@ func TestRemoveStopwords(t *testing.T) {
 func BenchmarkRemoveStopwords(b *testing.B) {
 	b.SetParallelism(1)
 
-	c, err := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
+	c := RemoveStopwords("this is a lot of text with many stopwords that should be removed")
 	b.StopTimer()
 
-	if err != nil || c != "lot text stopwords removed" {
+	if c != "lot text stopwords removed" {
 		b.Fail()
+	}
+}
+
+func TestFilterStopwords(t *testing.T) {
+	words := []string{"This", "is", "a", "test"}
+	filtered := FilterStopwords(words)
+
+	if len(filtered) != 1 {
+		t.Fatal()
 	}
 }

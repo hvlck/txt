@@ -39,8 +39,8 @@ func Words(s string) []string {
 }
 
 type WordOffset struct {
-	word   string
-	offset int
+	Word   string
+	Offset int
 }
 
 func normalize(s string) string {
@@ -60,8 +60,8 @@ func WordOffsets(s string) []WordOffset {
 
 	for idx, v := range words {
 		offsets[idx] = WordOffset{
-			word:   v,
-			offset: strings.Index(s, v),
+			Word:   v,
+			Offset: strings.Index(s, v),
 		}
 	}
 

@@ -49,7 +49,7 @@ func TestWordOffsets(t *testing.T) {
 
 	for idx, v := range examples {
 		for index, word := range WordOffsets(v) {
-			if words[idx][index] != word.offset {
+			if words[idx][index] != word.Offset {
 				t.Fatalf("expected %v, got %v", words[idx][index], word)
 			}
 		}
