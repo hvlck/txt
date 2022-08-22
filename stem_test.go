@@ -38,8 +38,7 @@ func TestStemTokens(t *testing.T) {
 }
 
 func TestEncode(t *testing.T) {
-	s := groupWord(word)
-	encode(s)
+	// s := groupWord(word)
 }
 
 func TestEndsWithCC(t *testing.T) {

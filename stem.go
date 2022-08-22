@@ -23,22 +23,23 @@ func isVowel(s rune) bool {
 	return vowels[s]
 }
 
-// tests if the provided input is a list of consonants or vowels
-// true is vowel, false is consonant
+// Tests if the provided input is a list of consonants or vowels.
+// True is vowel, false is consonant.
 func stringIsVowel(s string) bool {
 	return vowels[rune(s[0])]
 }
 
+// Returns the m value of a word as defined in the Porter algorithm.
 func m(s string) uint8 {
 	var m uint8 = 0
-	enc := encode(groupWord(s))
+	enc := groupWord(s)
 
 	if len(enc) > 2 {
-		if enc[0] == 'C' {
+		if enc[0] == "C" {
 			enc = enc[1:]
 		}
 
-		if enc[len(enc)-1] == 'V' {
+		if enc[len(enc)-1] == "V" {
 			enc = enc[:len(enc)-1]
 		}
 
@@ -51,7 +52,7 @@ func m(s string) uint8 {
 	return m
 }
 
-// groups a word by consonants and vowels
+// Groups a word by consonants and vowels.
 // "testing" -> ["t", "e", "st", "i", "ng"]
 func groupWord(s string) []string {
 	f := strings.ToLower(s)
@@ -79,23 +80,6 @@ func groupWord(s string) []string {
 	return strings.Split(f, ",")
 }
 
-type cvList []rune
-type stringList []string
-
-func encode(s []string) cvList {
-	r := make([]rune, len(s))
-	for i, v := range s {
-		vow := isVowel(rune(v[0]))
-		if vow {
-			r[i] = 'V'
-		} else {
-			r[i] = 'C'
-		}
-	}
-
-	return r
-}
-
 // stem has vowel
 func stemContainsVowel(stem string) bool {
 	for _, v := range stem {
@@ -107,7 +91,7 @@ func stemContainsVowel(stem string) bool {
 	return false
 }
 
-// stem ends with double consonant
+// Stem ends with double consonant
 func stemEndsCC(s string) bool {
 	o := s[len(s)-1]
 	t := s[len(s)-2]
@@ -119,9 +103,9 @@ func stemEndsCC(s string) bool {
 	return false
 }
 
-// stem ends with consonant-vowel-consonant
-// last consonant cannot be W, X, or Y
-func stemEndsCVC(s stringList) bool {
+// Stem ends with consonant-vowel-consonant.
+// Last consonant cannot be W, X, or Y
+func stemEndsCVC(s []string) bool {
 	if len(s) < 3 {
 		return false
 	}
@@ -148,13 +132,14 @@ func StemTokens(tokens []string) []string {
 	return tokens
 }
 
+// Stems a given token. Note that this should only be used with a single token.
 func Stem(s string) string {
 	// don't care, it's beautiful
 	return porter_five(porter_four(porter_three(porter_two(porter_one(s)))))
 }
 
-// alias for strings.HasSuffix
-// will only return true if any provided suffix is present
+// Alias for strings.HasSuffix.
+// Will only return true if any provided suffix is present
 func suf(s string, suffix ...string) bool {
 	for _, v := range suffix {
 		if strings.HasSuffix(s, v) {
