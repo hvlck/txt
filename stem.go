@@ -139,6 +139,15 @@ func stemEndsCVC(s stringList) bool {
 	return false
 }
 
+// Stems an array of words/tokens.
+func StemTokens(tokens []string) []string {
+	for idx, v := range tokens {
+		tokens[idx] = Stem(v)
+	}
+
+	return tokens
+}
+
 func Stem(s string) string {
 	// don't care, it's beautiful
 	return porter_five(porter_four(porter_three(porter_two(porter_one(s)))))

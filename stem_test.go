@@ -17,6 +17,26 @@ func TestGroupWord(t *testing.T) {
 	}
 }
 
+func TestStemTokens(t *testing.T) {
+	words := []string{"relational", "rational", "predication", "callousness", "decisiveness", "feudalism"}
+	correct := []string{
+		"relat",
+		"ration",
+		"predic",
+		"callous",
+		"decis",
+		"feudal",
+	}
+
+	words = StemTokens(words)
+
+	for idx, v := range words {
+		if v != correct[idx] {
+			t.Fatalf("%v is not %v", v, correct[idx])
+		}
+	}
+}
+
 func TestEncode(t *testing.T) {
 	s := groupWord(word)
 	encode(s)
