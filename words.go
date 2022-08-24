@@ -69,7 +69,7 @@ func WordOffsets(s string) []WordOffset {
 }
 
 func WordFrequency(s, word string) uint {
-	words := Words(s)
+	words := Normalize(s)
 
 	var i uint
 	for _, v := range words {

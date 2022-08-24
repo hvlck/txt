@@ -2,11 +2,7 @@
 
 `text utilities (golang)`
 
-`txt` is mainly a lot of text normalization and indexing utilities.
-
-This library is primarily intended for my own use, but pull requests are always welcome.
-
-The primary focus is on performance, for use in a full-text search engine I'm building.
+`txt` is mainly a lot of text normalization utilities, primarily for full-text search. This library is primarily intended for my own use, but pull requests are always welcome. The primary focus is on performance, for use in a full-text search engine I'm building.
 
 ## Utilities
 
