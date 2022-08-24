@@ -1,7 +1,7 @@
-// levenshtein distance
+// Spelling utilities.
 package txt
 
-// returns the minimum of a function
+// Returns the minimum of a list of numbers.
 func min(v ...uint8) uint8 {
 	m := v[0]
 
@@ -14,9 +14,9 @@ func min(v ...uint8) uint8 {
 	return m
 }
 
-// levenshtein distance
-// based in part on https://rosettacode.org/wiki/Levenshtein_distance#Go, some modifications made to use one-dimensional array
-// this version usually takes about half the time as the second version, and usually less than half the time of the first version on RosettaCode
+// Calculates the Levenshtein distance between two words.
+// Based in part on https://rosettacode.org/wiki/Levenshtein_distance#Go, some modifications made to use one-dimensional array.
+// This version usually takes about half the time as the second version, and usually less than half the time of the first version on RosettaCode.
 // todo: add swap variant (e.g. `liek` -> `like`)
 func Ld(a, b string) uint8 {
 	if a == "" {

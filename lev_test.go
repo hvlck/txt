@@ -107,3 +107,20 @@ func TestLd(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestMin(t *testing.T) {
+	mins := [][]uint8{
+		{10, 10, 10},
+		{10, 20, 30},
+		{0, 1, 2},
+		{2, 1, 0},
+		{5, 10, 3},
+	}
+	answers := []uint8{10, 10, 0, 0, 3}
+
+	for idx, v := range mins {
+		if min(v...) != answers[idx] {
+			t.Fatalf("expected %v, got %v", answers[idx], min(v...))
+		}
+	}
+}
