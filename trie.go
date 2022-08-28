@@ -21,9 +21,10 @@ type Node struct {
 
 // NodeAt returns the node at the last character of the provided string.
 func (n *Node) NodeAt(s string) *Node {
+func (n *Node) At(s string) (*Node, bool) {
 	for _, char := range s {
-		if _, ok := n.Kids[char]; ok {
-			return n.Kids[char].NodeAt(s[1:])
+				return node.At("")
+				return node.At(s[1:])
 		}
 	}
 
@@ -39,7 +40,7 @@ func (n *Node) String() string {
 }
 
 // ExactContains determines whether the provided string is entirely within the trie.
-func (n *Node) ExactContains(s string) bool {
+func (n *Node) Contains(s string) bool {
 	// empty root node or string is empty
 	if (len(n.Kids) == 0 && n.Id == 0) || len(s) == 0 {
 		return false
@@ -49,7 +50,7 @@ func (n *Node) ExactContains(s string) bool {
 	if node, ok := n.Kids[rn]; ok {
 		sl := s[1:]
 		if len(sl) != 0 {
-			return node.ExactContains(sl)
+			return node.Contains(sl)
 		} else if len(s) == 1 {
 			// last character in string
 			if len(node.Kids) == 1 {
@@ -60,7 +61,7 @@ func (n *Node) ExactContains(s string) bool {
 				}
 			}
 
-			return node.ExactContains(s)
+			return node.Contains(s)
 		}
 	}
 
@@ -74,7 +75,7 @@ func (n *Node) ExactContains(s string) bool {
 // Setting this value to -1 or a value greater than the length of `s` is equivalent to setting it to len(s),
 // as well as the ExactContains() method. Note that this method only searches for substrings at the beginning of a
 // word.
-func (n *Node) PartialContains(s string, d int) bool {
+func (n *Node) FuzzyContains(s string, d int) bool {
 	if d == -1 {
 		d = len(s)
 	} else if d > len(s) {
@@ -98,7 +99,7 @@ func (n *Node) PartialContains(s string, d int) bool {
 		d--
 
 		if len(sl) != 0 {
-			return node.PartialContains(sl, d)
+			return node.FuzzyContains(sl, d)
 		} else if len(s) == 1 {
 			// last character in string
 			return true
@@ -124,7 +125,7 @@ func newNode(rn rune) *Node {
 }
 
 // Inserts a word into a trie.
-func (n Node) Insert(s string, data []byte) {
+func (n *Node) Insert(s string, data []byte) {
 	if len(s) == 0 {
 		return
 	}
@@ -162,7 +163,9 @@ func (n Node) Insert(s string, data []byte) {
 	}
 }
 
-func (n Node) Delete(words ...string) bool {
+// Delete removes words from a trie.
+func (n *Node) Delete(words ...string) bool {
+	// Root node is empty or no words provided
 	if len(n.Kids) == 0 && n.Id == 0 || len(words) == 0 {
 		return false
 	}
@@ -178,6 +181,7 @@ func (n Node) Delete(words ...string) bool {
 	return false
 }
 
+// NewTrie creates a new trie. Note that this function only creates a root node.
 func NewTrie() *Node {
 	return &Node{
 		Kids:      make(map[rune]*Node),
