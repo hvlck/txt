@@ -43,6 +43,56 @@ func (n *Node) At(s string) (*Node, bool) {
 	return n, false
 }
 
+// Finds the first node in the last branch of a given string `s`. This is used by the delete function to find the earliest
+// place that a branch can be removed.
+// For instance, to remove the word "testing" from the following tree:
+// t
+//
+//	e
+//	 s
+//	  t
+//	   (i)
+//	    n
+//	     g
+//	      *
+//	   y
+//	    *
+//	   *
+//
+// The algorithm finds (i) is the first entry in the final unique branch of testing, and thus can be removed.
+// This method also handles edge cases, like when a prefix of another word (e.g. `test` in this case) is being removed,
+// in which case only the wordstop (`*`) child node needs to be removed. This is the meaning of the second boolean return
+// parameter; a `true` value indicates only the `*` child should be removed, while a false value indicates that all
+// remaining children (which should only be one) should be removed. The Node pointer return value indicates the parent
+// node, whose children should be removed.
+func (n *Node) find_last_unique_branch(s string, lastBranch *Node) (*Node, bool) {
+	for _, char := range s {
+		if node, ok := n.Kids[char]; ok {
+			if len(node.Kids) == 1 {
+				if _, ok := node.Kids['*']; ok {
+					return lastBranch, false
+				}
+			} else if len(node.Kids) > 1 {
+				if len(s) > 1 {
+					if kid, ok := node.Kids[rune(s[1])]; ok {
+						return node.find_last_unique_branch(s[1:], kid)
+					}
+				} else {
+					if _, ok := node.Kids['*']; ok {
+						return node, true
+					}
+
+					return lastBranch, false
+				}
+			}
+
+			return node.find_last_unique_branch(s[1:], lastBranch)
+		} else {
+			return lastBranch, false
+		}
+	}
+
+	return n, false
 }
 
 func (n *Node) String() string {
@@ -50,7 +100,7 @@ func (n *Node) String() string {
 	done: %v,
 	character: %v,
 	id: %v
-	}`, n.Done, string(n.Character), n.Id)
+}`, n.Done, string(n.Character), n.Id)
 }
 
 // ExactContains determines whether the provided string is entirely within the trie.
@@ -152,6 +202,7 @@ func (n *Node) Insert(s string, data []byte) {
 	// no kids
 	if len(n.Kids) == 0 {
 		n.Kids[rn] = newNode(rn)
+		n.Done = false
 	} else if node, ok := n.Kids[rn]; ok {
 		// node is present, continue down branch
 		sl := s[1:]
@@ -189,7 +240,16 @@ func (n *Node) Delete(words ...string) bool {
 			continue
 		}
 
-		// todo: finish implementation
+		if node, deleteFinal := n.find_last_unique_branch(s, n); node != nil {
+			if deleteFinal {
+				delete(node.Kids, '*')
+			} else {
+				// # of kids is guaranteed to be 1
+				for k := range node.Kids {
+					delete(node.Kids, k)
+				}
+			}
+		}
 	}
 
 	return false

@@ -33,7 +33,7 @@ func TestExactContains(t *testing.T) {
 	}
 
 	for k, v := range answers {
-		if trie.ExactContains(k) != v {
+		if trie.Contains(k) != v {
 			t.Fatalf("%v is not %v", k, v)
 		}
 	}
@@ -48,14 +48,14 @@ func BenchmarkExactContains(b *testing.B) {
 	}
 	b.StartTimer()
 
-	present := trie.ExactContains("Antidisestablishmentarianism")
+	present := trie.Contains("Antidisestablishmentarianism")
 
 	if !present {
 		b.Fail()
 	}
 }
 
-func TestPartialContains(t *testing.T) {
+func TestFuzzyContains(t *testing.T) {
 	trie := NewTrie()
 	words := []string{"testing", "original", "tertiary"}
 	for _, v := range words {
@@ -71,7 +71,7 @@ func TestPartialContains(t *testing.T) {
 	}
 
 	for k, v := range answers {
-		if trie.PartialContains(k, -1) != v {
+		if trie.FuzzyContains(k, -1) != v {
 			t.Fatalf("%v is not %v", k, v)
 		}
 	}
@@ -84,7 +84,7 @@ func BenchmarkPartialContains(b *testing.B) {
 		trie.Insert(v, nil)
 	}
 
-	if trie.PartialContains("Antidisestablishm", -1) != true {
+	if trie.FuzzyContains("Antidisestablishm", -1) != true {
 		b.Fail()
 	}
 }
@@ -93,6 +93,10 @@ func TestInsert(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", nil)
 	if len(trie.Kids) != 1 {
+		t.Fail()
+	}
+
+	if _, ok := trie.At("testing"); !ok {
 		t.Fail()
 	}
 }
@@ -113,4 +117,30 @@ func TestTrie(t *testing.T) {
 	}
 
 	// printKids(trie, "", 1)
+}
+
+func TestDelete(t *testing.T) {
+	trie := NewTrie()
+	trie.Insert("testing", nil)
+	trie.Insert("tertiary", nil)
+	trie.Insert("test", nil)
+	trie.Insert("testy", nil)
+
+	trie.Delete("testing")
+
+	if _, ok := trie.At("testing"); ok {
+		t.Fail()
+	}
+
+	if node, ok := trie.At("test"); !ok {
+		t.Fatal(node)
+	}
+
+	if _, ok := trie.At("testy"); !ok {
+		t.Fail()
+	}
+
+	if _, ok := trie.At("tertiary"); !ok {
+		t.Fail()
+	}
 }
