@@ -19,16 +19,30 @@ type Node struct {
 	Id uint32
 }
 
-// NodeAt returns the node at the last character of the provided string.
-func (n *Node) NodeAt(s string) *Node {
+// At returns the end node of the last provided string. If no node exists, then the second argument will be `false`.
 func (n *Node) At(s string) (*Node, bool) {
-	for _, char := range s {
-				return node.At("")
-				return node.At(s[1:])
+	if len(s) == 0 {
+		if node, ok := n.Kids['*']; ok {
+			return node, true
 		}
 	}
 
-	return n
+	for _, char := range s {
+		if node, ok := n.Kids[char]; ok {
+			if len(s) == 1 {
+				return node.At("")
+			} else {
+				return node.At(s[1:])
+			}
+		} else {
+			return n, false
+		}
+
+	}
+
+	return n, false
+}
+
 }
 
 func (n *Node) String() string {
