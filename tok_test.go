@@ -1,28 +1,48 @@
 package txt
 
-import "testing"
+import (
+	"testing"
+)
 
-func TestNormalize(t *testing.T) {
+func TestTokenize(t *testing.T) {
 	tests := []string{
-		"A  ",
-		"!",
-		"The quick brown fox jumped over the sly  dog.",
+		"Simple text string",
+		"a MoRe comPlicated  string   with odd  Spacing ... ",
+		"  $testing str@ing !@#$%^&*()",
 	}
-	tokens := [][]string{
-		{"a"},
-		{},
-		{"the", "quick", "brown", "fox", "jumped", "over", "the", "sly", "dog"},
+	expected := [][]string{
+		{"simple", "text", "string"},
+		{"complicated", "string", "odd", "spacing"},
+		{"testing", "str", "ing"},
 	}
 
-	for idx, v := range tests {
-		n := Normalize(v)
-		if len(n) != len(tokens[idx]) {
-			t.Fatalf("expected %v tokens, got %v: '%v'", len(tokens[idx]), len(n), v)
+	for index, v := range tests {
+		tokens := Tokenize(v, SplitNonAlphanumeric, TokenizerStopwords)
+		for idx, tok := range tokens {
+			expect := expected[index][idx]
+			if expect != tok {
+				t.Fatalf("expected '%v', got '%v' for input '%v'", expect, tok, v)
+			}
 		}
+	}
+}
 
-		for index, tok := range n {
-			if tok != tokens[idx][index] {
-				t.Fatalf("expected %v, got %v in '%v'", tokens[idx][index], tok, v)
+func TestNormalizeColors(t *testing.T) {
+	tests := []string{
+		"normalize the color HotPink",
+		"gold is a color",
+	}
+	expected := [][]string{
+		{"normalize", "color", "#FF69B4"},
+		{"#FFD700", "color"},
+	}
+
+	for index, v := range tests {
+		tokens := Tokenize(v, SplitNonAlphanumeric, TokenizerStopwords, TokenizerColors)
+		for idx, tok := range tokens {
+			expect := expected[index][idx]
+			if expect != tok {
+				t.Fatalf("expected '%v', got '%v' for input '%v'", expect, tok, v)
 			}
 		}
 	}
