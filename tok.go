@@ -6,21 +6,29 @@ import (
 	"unicode"
 )
 
-func Normalize(text string) []string {
-	text = strings.ToLower(text)
-	return strings.FieldsFunc(text, func(r rune) bool {
-		return !unicode.IsNumber(r) && !unicode.IsLetter(r)
-	})
+// Normalizes a list of tokens.
+type Tokenizer func(tokens []string) []string
 }
 
-func Tokenize(text string) []string {
+// Splits a string into individual tokens.
+type Splitter func(text string) []string
+
+// Produces a list of normalized text tokens. If no options are provided, the DefaultTokenizer is used.
+func Tokenize(text string, splitter Splitter, options ...Tokenizer) []string {
 	if len(text) == 0 {
 		return make([]string, 0)
 	}
 
-	tokens := Normalize(text)
-	tokens = FilterStopwords(tokens)
-	tokens = StemTokens(tokens)
+	if len(options) == 0 {
+		options = append(options, DefaultTokenizer...)
+	}
+
+	text = Normalize(text)
+	tokens := splitter(text)
+
+	for _, v := range options {
+		tokens = v(tokens)
+	}
 
 	return tokens
 }
