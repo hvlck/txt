@@ -2,11 +2,13 @@
 package txt
 
 import (
-	"bytes"
-	"os"
+	_ "embed"
 	"strings"
 	"unicode"
 )
+
+//go:embed dicts/colors.txt
+var COLORS_DICT_EMBED string
 
 // Loads a replacer file from a given path.
 // Files must be in the format:
@@ -14,27 +16,22 @@ import (
 // with each tuple on a new line.
 // The values are loaded into memory; the replaced value is assigned the `Data` field on the final
 // node of a trie branch, which can be accessed using Trie.NodeAt(x).
-func LoadReplacer(path string, caseSensitive bool) *Node {
-	f, err := os.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-
+func LoadDictionary(data string, caseSensitive bool) *Node {
 	t := NewTrie()
 
-	for _, v := range bytes.Split(f, []byte("\n")) {
-		tuple := bytes.Split(v, []byte(","))
+	for _, v := range strings.Split(data, "\n") {
+		tuple := strings.Split(v, ",")
 		if len(tuple) < 2 {
 			break
 		}
 
 		original := tuple[0]
 		if !caseSensitive {
-			original = bytes.ToLower(original)
+			original = strings.ToLower(original)
 		}
 		replaced := tuple[1]
 
-		t.Insert(string(original), replaced)
+		t.Insert(string(original), []byte(replaced))
 	}
 
 	return t
@@ -42,7 +39,7 @@ func LoadReplacer(path string, caseSensitive bool) *Node {
 
 var (
 	// English colors and their hex equivalents.
-	Colors *Node = LoadReplacer("./dicts/colors.txt", false)
+	Colors *Node = LoadDictionary(COLORS_DICT_EMBED, false)
 )
 
 // Normalizes a list of tokens.

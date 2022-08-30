@@ -19,7 +19,7 @@ var (
 
 	// Removes most punctuation. Periods and slashes are not removed.
 	NormalizePunctuation Normalizer = func(text string) string {
-		return removeChars(text, ",", ":", ";", "!", "?", "\"", "'", "(", ")", "&")
+		return removeChars(text, ",", ";", "!", "?", "\"", "'", "(", ")", "&")
 	}
 
 	// Removes all punctuation, including periods and slashes.
@@ -28,7 +28,7 @@ var (
 	}
 
 	NormalizeSpecial Normalizer = func(text string) string {
-		return removeChars(text, "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "[", "]", "{", "}", ";", ":", "'", "\"", "<", ">", "?", "/", "\\", "~", "`")
+		return removeChars(text, "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "[", "]", "{", "}", ";", "'", "<", ">", "?", "~", "`")
 	}
 
 	// Replaces instances of hyphens with spaces.
