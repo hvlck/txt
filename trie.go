@@ -9,13 +9,23 @@ type Node struct {
 	// Pointers to child branches
 	Kids map[rune]*Node
 	// Custom data, inserted into the last child ('*') of a string's tree.
-	Data []byte
+	Data interface{}
 	// End of branch
 	Done bool
 	// Character representing current branch
 	Character rune
 	// Internal id. 0 is the id of the root node.
 	Id uint32
+}
+
+// Returns a list of all words stored in the trie.
+func (n *Node) Words() []string {
+	for _, v := range n.Kids {
+		if v.Done {
+
+		}
+	}
+	return make([]string, 0)
 }
 
 // At returns the end node of the last provided string. If no node exists, then the second argument will be `false`.
@@ -188,7 +198,7 @@ func newNode(rn rune) *Node {
 }
 
 // Inserts a word into a trie.
-func (n *Node) Insert(s string, data []byte) {
+func (n *Node) Insert(s string, data interface{}) {
 	if len(s) == 0 {
 		return
 	}
