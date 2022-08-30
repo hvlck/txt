@@ -92,7 +92,8 @@ func BenchmarkPartialContains(b *testing.B) {
 func TestInsert(t *testing.T) {
 	trie := NewTrie()
 	trie.Insert("testing", nil)
-	if len(trie.Kids) != 1 {
+	trie.Insert("random string 123$12378 0x1b", nil)
+	if len(trie.Kids) != 2 {
 		t.Fail()
 	}
 

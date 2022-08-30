@@ -2,7 +2,6 @@ package txt
 
 import (
 	"fmt"
-	"unicode"
 )
 
 // Node is a node in a trie tree.
@@ -195,9 +194,6 @@ func (n *Node) Insert(s string, data []byte) {
 	}
 
 	rn := rune(s[0])
-	if !unicode.IsNumber(rn) && !unicode.IsLetter(rn) {
-		return
-	}
 
 	// no kids
 	if len(n.Kids) == 0 {
