@@ -14,7 +14,7 @@ func TestNormalize(t *testing.T) {
 		"a ",
 		"",
 		"the quick brown fox jumped over the sly dog.",
-		" .",
+		"$ :/\\.",
 	}
 
 	for idx, v := range tests {

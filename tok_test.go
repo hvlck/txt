@@ -13,11 +13,11 @@ func TestTokenize(t *testing.T) {
 	expected := [][]string{
 		{"simple", "text", "string"},
 		{"complicated", "string", "odd", "spacing"},
-		{"testing", "str", "ing"},
+		{"testing", "string"},
 	}
 
 	for index, v := range tests {
-		tokens := Tokenize(v, SplitNonAlphanumeric, TokenizerStopwords)
+		tokens := Tokenize(v, SplitNonAlphanumeric, nil, TokenizerStopwords)
 		for idx, tok := range tokens {
 			expect := expected[index][idx]
 			if expect != tok {
@@ -38,7 +38,7 @@ func TestNormalizeColors(t *testing.T) {
 	}
 
 	for index, v := range tests {
-		tokens := Tokenize(v, SplitNonAlphanumeric, TokenizerStopwords, TokenizerColors)
+		tokens := Tokenize(v, SplitNonAlphanumeric, nil, TokenizerStopwords, TokenizerColors)
 		for idx, tok := range tokens {
 			expect := expected[index][idx]
 			if expect != tok {

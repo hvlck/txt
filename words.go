@@ -65,7 +65,7 @@ func WordOffsets(s string) []WordOffset {
 }
 
 func WordFrequency(s, word string) uint {
-	words := Tokenize(s, DefaultSplitter)
+	words := Tokenize(s, DefaultSplitter, nil)
 
 	var i uint
 	for _, v := range words {

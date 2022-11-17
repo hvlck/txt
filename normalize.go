@@ -28,7 +28,7 @@ var (
 	}
 
 	NormalizeSpecial Normalizer = func(text string) string {
-		return removeChars(text, "!", "@", "#", "$", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "[", "]", "{", "}", ";", "'", "<", ">", "?", "~", "`")
+		return removeChars(text, "!", "@", "#", "%", "^", "&", "*", "(", ")", "-", "_", "+", "=", "[", "]", "{", "}", ";", "'", "<", ">", "?", "~", "`")
 	}
 
 	// Replaces instances of hyphens with spaces.
@@ -49,7 +49,7 @@ var DefaultNormalizer = []Normalizer{
 // Normalizes a given string using the provided options. Options are executed in the order that they're provided in.
 // If no options are provided, the default normalizer is used.
 func Normalize(text string, options ...Normalizer) string {
-	if len(options) == 0 {
+	if len(options) == 0 || options == nil {
 		options = append(options, DefaultNormalizer...)
 	}
 

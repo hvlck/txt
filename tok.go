@@ -54,8 +54,8 @@ var (
 	// Normalizes color names (e.g. `red`, `navy`) into their hex values.
 	TokenizerColors Tokenizer = func(tokens []string) []string {
 		for i, v := range tokens {
-			if n, exists := Colors.At(v); exists {
-				tokens[i] = string(n.Data)
+			if n, exists := Colors.Find(v); exists {
+				tokens[i] = string(n.Data.([]byte))
 			}
 		}
 
@@ -84,7 +84,7 @@ var DefaultTokenizer = []Tokenizer{
 type Splitter func(text string) []string
 
 // Produces a list of normalized text tokens. If no options are provided, the DefaultTokenizer is used.
-func Tokenize(text string, splitter Splitter, options ...Tokenizer) []string {
+func Tokenize(text string, splitter Splitter, normalizer []Normalizer, options ...Tokenizer) []string {
 	if len(text) == 0 {
 		return make([]string, 0)
 	}
@@ -93,7 +93,7 @@ func Tokenize(text string, splitter Splitter, options ...Tokenizer) []string {
 		options = append(options, DefaultTokenizer...)
 	}
 
-	text = Normalize(text)
+	text = Normalize(text, normalizer...)
 	tokens := splitter(text)
 
 	for _, v := range options {
