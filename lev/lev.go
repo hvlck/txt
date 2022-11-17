@@ -1,5 +1,5 @@
-// Spelling utilities.
-package txt
+// Levenshtein distance calculator
+package levenshtein
 
 // Returns the minimum of a list of numbers.
 func min(v ...uint8) uint8 {

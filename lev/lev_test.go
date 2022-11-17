@@ -1,4 +1,4 @@
-package txt
+package levenshtein
 
 import (
 	"testing"
